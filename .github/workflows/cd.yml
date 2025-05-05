@@ -32,6 +32,6 @@ jobs:
           passphrase: ${{ secrets.ANSIBLE_SSH_PASSPHRASE }}
           port: "${{ env.SSH_PORT }}"
           script: |
-            wget https://github.com/Tongenx/fast-2024/blob/main/todo-list.yml
-            sudo docker service rm fast-ci-todo | true
+            wget "https://raw.githubusercontent.com/tongenx/fast-2024/main/todo-list.yml"
+            sudo docker service rm todo-app | true
             sudo docker stack deploy -c todo-list.yml todo-app
