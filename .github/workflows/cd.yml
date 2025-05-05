@@ -29,6 +29,7 @@ jobs:
           host: "${{ env.HOST_ENV }}"
           username: "${{ env.SSH_USER }}"
           key: ${{ secrets.ANSIBLE_SSH_KEY }}
+          passphrase: ${{ secrets.ANSIBLE_SSH_PASSPHRASE }}
           port: "${{ env.SSH_PORT }}"
           script: |
             wget https://github.com/Tongenx/fast-2024/blob/main/todo-list.yml
