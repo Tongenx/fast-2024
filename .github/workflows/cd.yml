@@ -1,0 +1,36 @@
+name: fast-cd
+
+on:
+    workflow_dispatch:
+        envronment:
+            type: choice
+            description: "Ambiente de deployment"
+            required: true
+            options:
+            - dev
+            - prod
+        imageTag:
+            required: true
+            description: "Deploy imagem tag"
+            default: "latest"
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+    env:
+      HOST_ENV: "34.135.241.224,35.226.243.128,35.226.65.203"
+      SSH_USER: "egr"
+      SSH_PORT: 22
+    steps:
+
+      - name: Deploy service
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: "${{ env.HOST_ENV }}"
+          username: "${{ env.SSH_USER }}"
+          key: ${{ secrets.ANSIBLE_SSH_KEY }}
+          port: "${{ env.SSH_PORT }}"
+          script: |
+            wget https://github.com/Tongenx/fast-2024/blob/main/todo-list.yml
+            sudo docker service rm fast-ci-todo | true
+            sudo docker stack deploy -c todo-list.yml todo-app

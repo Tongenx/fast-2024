@@ -1,0 +1,13 @@
+services:
+  getting-started:
+    image: tongenx/fast-ci-cd:latest
+    ports:
+      - "80:3000"
+    volumes:
+      - /swarm-nodes/db-todo:/etc/todos
+    deploy:
+      replicas: 3
+
+volumes:
+  db-todo:
+    external: true
