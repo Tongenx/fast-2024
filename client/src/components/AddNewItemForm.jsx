@@ -43,7 +43,7 @@ export function AddItemForm({ onNewItem }) {
                     disabled={!newItem.length}
                     className={submitting ? 'disabled' : ''}
                 >
-                    {submitting ? 'Adding...' : 'Add Item'}
+                    {submitting ? 'Adicionando...' : 'Adicionar item'}
                 </Button>
             </InputGroup>
         </Form>
