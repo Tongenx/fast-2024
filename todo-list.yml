@@ -7,6 +7,14 @@ services:
       - /swarm-nodes/db-todo:/etc/todos
     deploy:
       replicas: 3
+      restart_policy:
+        condition: on-failure
+      update_config:
+        parallelism: 1
+        delay: 10s
+      rollback_config: 
+        parallelism: 0
+        delay: 5s
 
 volumes:
   db-todo:

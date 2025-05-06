@@ -1,3 +1,4 @@
+#name: CI - cluster Docker Swarm
 name: fast-ci
 
 on:
@@ -12,7 +13,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-        
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -30,3 +31,13 @@ jobs:
         with:
           push: true
           tags: tongenx/fast-ci-cd:${{ github.event.number == 0 && 'latest' || format('PR-{0}', github.event.number) }}
+
+      - name: Disparar deployment em dev
+        uses: benc-uk/workflow-dispatch@v1
+        env:
+          IMAGE_TAG: ${{ github.event.number == 0 && 'latest' || format('PR-{0}', github.event.number) }}
+        with:
+          workflow: cd.yml
+          inputs: '{ "envronment": "dev", "imageTag": "${{ env.IMAGE_TAG }}" }'
+          token: "${{ secrets.TOKEN_GITHUB }}"
+  
