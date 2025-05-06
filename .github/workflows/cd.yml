@@ -49,8 +49,7 @@ jobs:
          remote_host: ssh://user@myswarm.com
          ssh_private_key: ${{ secrets.DOCKER_SSH_PRIVATE_KEY }}
          ssh_public_key: ${{ secrets.DOCKER_SSH_PUBLIC_KEY }}
-         args: |
-            sudo docker stack deploy $HOME/${{ env.STACK_FILE }} ${{ env.SWARM_STACK_NAME }} 
+         args: sudo docker stack deploy $HOME/${{ env.STACK_FILE }} ${{ env.SWARM_STACK_NAME }}
 
     # - name: Deploy service on Docker Swarm Manager
     #   uses: appleboy/ssh-action@v1.0.3
