@@ -40,4 +40,5 @@ jobs:
           workflow: cd.yml
           inputs: '{ "environment": "dev", "imageTag": "${{ env.IMAGE_TAG }}" }'
           token: "${{ secrets.TOKEN_GITHUB }}"
+          ref: main
   
