@@ -51,4 +51,5 @@ jobs:
          passphrase: ${{ secrets.ANSIBLE_SSH_PASSPHRASE }}
          port: "${{ env.SSH_PORT }}"
          script: |
+           export APP_IMAGE_TAG=${{ github.event.inputs.imageTag }}
            sudo docker stack deploy -c $HOME/${{ env.STACK_FILE }} ${{ env.STACK_NAME }}
