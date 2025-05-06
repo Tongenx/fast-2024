@@ -38,6 +38,6 @@ jobs:
           IMAGE_TAG: ${{ github.event.number == 0 && 'latest' || format('PR-{0}', github.event.number) }}
         with:
           workflow: cd.yml
-          inputs: '{ "envronment": "dev", "imageTag": "${{ env.IMAGE_TAG }}" }'
+          inputs: '{ "environment": "dev", "imageTag": "${{ env.IMAGE_TAG }}" }'
           token: "${{ secrets.TOKEN_GITHUB }}"
   
