@@ -23,27 +23,26 @@ jobs:
       HOST_ENV: "34.135.241.224"
       SSH_USER: "egr"
       SSH_PORT: 22
-      SWARM_STACK_NAME: todo-app
+      STACK_NAME: todo-app
       STACK_FILE: todo-list.yml
     
     steps:
 
      - name: Checkout code
        uses: actions/checkout@v4
-       # O código do repo (incluindo todo-list.yml) estará disponível no agente do GitHub Actions
 
-     - name: Transfer stack file to Swarm Manager
-       uses: appleboy/scp-action@v0.1.4 # Usar SCP para transferir o arquivo
+     - name: Copiar o arquivo para o cluster Swarm
+       uses: appleboy/scp-action@v0.1.4
        with:
          host: ${{ env.HOST_ENV }}
          username: ${{ env.SSH_USER }}
-         key: ${{ secrets.ANSIBLE_SSH_KEY }} # Ou SSH_PRIVATE_KEY
+         key: ${{ secrets.ANSIBLE_SSH_KEY }} 
          passphrase: ${{ secrets.ANSIBLE_SSH_PASSPHRASE }}
          port: ${{ env.SSH_PORT }}
-         source: ${{ env.STACK_FILE }} # Arquivo no agente local
-         target: $HOME # Diretório temporário no servidor remoto
+         source: ${{ env.STACK_FILE }} 
+         target: $HOME 
 
-     - name: Deploy service
+     - name: Deploy no cluster Swarm
        uses: appleboy/ssh-action@v1.0.3
        with:
          host: "${{ env.HOST_ENV }}"
@@ -52,48 +51,4 @@ jobs:
          passphrase: ${{ secrets.ANSIBLE_SSH_PASSPHRASE }}
          port: "${{ env.SSH_PORT }}"
          script: |
-           sudo docker stack deploy -c $HOME/${{ env.STACK_FILE }} ${{ env.SWARM_STACK_NAME }}
-           echo "Verifique o status do rollout com 'sudo docker stack ps ${{ env.SWARM_STACK_NAME }}' no manager Swarm."
-
-#     - name: Deploy to swarm
-#       uses: sagebind/docker-swarm-deploy-action@v2
-#       with:
-#         remote_host: ssh://user@myswarm.com
-#         ssh_private_key: ${{ secrets.DOCKER_SSH_PRIVATE_KEY }}
-#         ssh_public_key: ${{ secrets.DOCKER_SSH_PUBLIC_KEY }}
-#         args: sudo docker stack deploy -c $HOME/${{ env.STACK_FILE }} ${{ env.SWARM_STACK_NAME }}
-
-    # - name: Deploy service on Docker Swarm Manager
-    #   uses: appleboy/ssh-action@v1.0.3
-    #   with:
-    #     host: ${{ env.HOST_ENV }}
-    #     username: ${{ env.SSH_USER }}
-    #     key: ${{ secrets.ANSIBLE_SSH_KEY }} # Ou SSH_PRIVATE_KEY
-    #     passphrase: ${{ secrets.ANSIBLE_SSH_PASSPHRASE }}
-    #     port: ${{ env.SSH_PORT }}
-    #     script: |
-    #       # Move o arquivo para um local permanente ou use o /tmp diretamente
-    #       # sudo mv /tmp/${{ env.STACK_FILE }} /home/${{ env.SSH_USER }}/ # Exemplo de mover
-    #       echo "Iniciando deploy do stack '${{ env.SWARM_STACK_NAME }}' com arquivo /tmp/${{ env.STACK_FILE }}"   
-    #       # Executa o deploy/update do stack. Swarm gerencia o rolling update.
-    #       # Assume que o todo-list.yml referencia a imagem correta (ex: your-dockerhub-user/your-app:latest)
-    #       sudo docker stack deploy \
-    #         --compose-file /tmp/${{ env.STACK_FILE }} \
-    #         --with-registry-auth \
-    #         ${{ env.SWARM_STACK_NAME }}   
-    #       echo "Comando de deploy do stack executado."
-    #       echo "Verifique o status do rollout com 'sudo docker stack ps ${{ env.SWARM_STACK_NAME }}' no manager Swarm."
-
-#      - name: Deploy service
-#        uses: appleboy/ssh-action@v1.0.3
-#        with:
-#          host: "${{ env.HOST_ENV }}"
-#          username: "${{ env.SSH_USER }}"
-#          key: ${{ secrets.ANSIBLE_SSH_KEY }}
-#          passphrase: ${{ secrets.ANSIBLE_SSH_PASSPHRASE }}
-#          port: "${{ env.SSH_PORT }}"
-#          script: |
-#            sudo rm -rf todo-list.* | true
-#            wget "https://raw.githubusercontent.com/tongenx/fast-2024/main/todo-list.yml"
-#            sudo docker service rm todo-app | true
-#            sudo docker stack deploy -c todo-list.yml todo-app
+           sudo docker stack deploy -c $HOME/${{ env.STACK_FILE }} ${{ env.STACK_NAME }}
