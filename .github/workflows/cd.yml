@@ -43,13 +43,25 @@ jobs:
          source: ${{ env.STACK_FILE }} # Arquivo no agente local
          target: $HOME # Diretório temporário no servidor remoto
 
-     - name: Deploy to swarm
-       uses: sagebind/docker-swarm-deploy-action@v2
+     - name: Deploy service
+       uses: appleboy/ssh-action@v1.0.3
        with:
-         remote_host: ssh://user@myswarm.com
-         ssh_private_key: ${{ secrets.DOCKER_SSH_PRIVATE_KEY }}
-         ssh_public_key: ${{ secrets.DOCKER_SSH_PUBLIC_KEY }}
-         args: sudo docker stack deploy $HOME/${{ env.STACK_FILE }} ${{ env.SWARM_STACK_NAME }}
+         host: "${{ env.HOST_ENV }}"
+         username: "${{ env.SSH_USER }}"
+         key: ${{ secrets.ANSIBLE_SSH_KEY }}
+         passphrase: ${{ secrets.ANSIBLE_SSH_PASSPHRASE }}
+         port: "${{ env.SSH_PORT }}"
+         script: |
+           sudo docker stack deploy -c $HOME/${{ env.STACK_FILE }} ${{ env.SWARM_STACK_NAME }}
+           echo "Verifique o status do rollout com 'sudo docker stack ps ${{ env.SWARM_STACK_NAME }}' no manager Swarm."
+
+#     - name: Deploy to swarm
+#       uses: sagebind/docker-swarm-deploy-action@v2
+#       with:
+#         remote_host: ssh://user@myswarm.com
+#         ssh_private_key: ${{ secrets.DOCKER_SSH_PRIVATE_KEY }}
+#         ssh_public_key: ${{ secrets.DOCKER_SSH_PUBLIC_KEY }}
+#         args: sudo docker stack deploy -c $HOME/${{ env.STACK_FILE }} ${{ env.SWARM_STACK_NAME }}
 
     # - name: Deploy service on Docker Swarm Manager
     #   uses: appleboy/ssh-action@v1.0.3
