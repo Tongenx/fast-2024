@@ -31,7 +31,9 @@ jobs:
         with:
           push: true
           tags: tongenx/fast-ci-cd:${{ github.event.number == 0 && 'latest' || format('PR-{0}', github.event.number) }}
-
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          
       - name: Disparar deployment em dev
         uses: benc-uk/workflow-dispatch@v1
         env:
